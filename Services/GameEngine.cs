@@ -80,15 +80,19 @@ public class GameEngine
             return;
         }
 
+        var room =_context.Rooms.FirstOrDefault(room => room.Id == roomId);
+
         var character = new Character
         {
             Name = name,
             Level = level,
-            RoomId = roomId
+            RoomId = roomId,
+            Room = room
         };
 
+        room.Characters.Add(character);
+
         _context.Characters.Add(character);
-        _context.Rooms.FirstOrDefault(room => room.Id == roomId).Characters.Add(character);
         _context.SaveChanges();
     }
 
