@@ -43,4 +43,68 @@ public class GameEngine
             Console.WriteLine("No characters available.");
         }
     }
+
+    public void AddRoom()
+    {
+        Console.Write("Enter room name: ");
+        var name = Console.ReadLine();
+
+        Console.Write("Enter room description: ");
+        var description = Console.ReadLine();
+
+        var room = new Room
+        {
+            Name = name,
+            Description = description
+        };
+
+        _context.Rooms.Add(room);
+        _context.SaveChanges();
+
+        Console.WriteLine($"Room '{name}' added to the game.");
+    }
+
+    public void AddCharacter()
+    {
+        Console.Write("Enter character name: ");
+        var name = Console.ReadLine();
+
+        Console.Write("Enter character level: ");
+        var level = int.Parse(Console.ReadLine());
+
+        Console.Write("Enter room ID for the character: ");
+        var roomId = int.Parse(Console.ReadLine());
+
+        if (!_context.Rooms.Any(room => room.Id == roomId))
+        {
+            return;
+        }
+
+        var character = new Character
+        {
+            Name = name,
+            Level = level,
+            RoomId = roomId
+        };
+
+        _context.Characters.Add(character);
+        _context.Rooms.FirstOrDefault(room => room.Id == roomId).Characters.Add(character);
+        _context.SaveChanges();
+    }
+
+    public void FindCharacter()
+    {
+        Console.Write("Enter character name to search: ");
+        var name = Console.ReadLine();
+
+        var character = _context.Characters.FirstOrDefault(character => character.Name == name);
+
+        if (character is null) {
+            Console.WriteLine($"No character by character name {name}");
+            return;
+        }
+
+        Console.WriteLine($"Found character ({character.Id}) {character.Name}");
+    }
+
 }
